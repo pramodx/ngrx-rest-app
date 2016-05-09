@@ -1,4 +1,4 @@
-import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from 'angular2/core';
+import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
 import {ItemsService, Item, AppStore} from './items';
 import {Observable} from 'rxjs/Observable';
 import {Store} from '@ngrx/store';
@@ -9,7 +9,7 @@ import {Store} from '@ngrx/store';
 @Component({
   selector: 'items-list',
   template: `
-  <div *ngFor="#item of items" (click)="selected.emit(item)"
+  <div *ngFor="let item of items" (click)="selected.emit(item)"
     class="item-card mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text">{{item.name}}</h2>
@@ -108,11 +108,15 @@ export class App {
   selectedItem: Observable<Item>;
 
   constructor(private itemsService: ItemsService, private store: Store<AppStore>) {
-    this.items = itemsService.items;
-    this.selectedItem = store.select('selectedItem');
+
+  }
+
+  ngOnInit() {
+    this.items = this.itemsService.items;
+    this.selectedItem = this.store.select('selectedItem');
     this.selectedItem.subscribe(v => console.log(v));
 
-    itemsService.loadItems();
+    this.itemsService.loadItems();
   }
 
   resetItem() {

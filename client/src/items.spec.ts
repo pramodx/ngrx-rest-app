@@ -4,7 +4,7 @@ import {
   it,
   describe,
   expect
-} from 'angular2/testing';
+} from '@angular/core/testing';
 
 describe('Items', () => {
   describe('`selectedItem` store', () => {

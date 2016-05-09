@@ -1,7 +1,8 @@
-import {Http, Headers} from 'angular2/http';
+import {Http, Headers} from '@angular/http';
 import {Store} from '@ngrx/store';
-import {Injectable} from 'angular2/core';
+import {Injectable} from '@angular/core';
 import {Observable} from 'rxjs/Observable';
+import 'rxjs/add/operator/map';
 
 const BASE_URL = 'http://localhost:3000/items/';
 const HEADER = { headers: new Headers({ 'Content-Type': 'application/json' }) };

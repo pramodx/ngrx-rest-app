@@ -1,16 +1,21 @@
 {
   "compilerOptions": {
-    "target": "ES5",
-    "module": "commonjs",
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
+    "removeComments": false,
+    "sourceMap": true,
+    "target": "es5",
     "experimentalDecorators": true,
-    "sourceMap": true
+    "module": "commonjs",
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "suppressImplicitAnyIndexErrors": true
   },
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "typings/main",
+    "typings/main.d.ts"
   ],
   "filesGlob": [
+    "typings/browser.d.ts",
     "client/**/*.ts"
   ],
   "compileOnSave": false,
@@ -18,6 +23,7 @@
     "rewriteTsconfig": true
   },
   "files": [
+    "typings/browser.d.ts",
     "client/bootstrap.ts",
     "client/src/app.ts",
     "client/src/items.spec.ts",
