@@ -4,6 +4,7 @@ A RESTful master-detail application built using Angular 2 and [ngrx store](https
 
 ## Prerequisites
 You will need to have [Git](https://git-scm.com/) and [Node.js + NPM](http://nodejs.org) installed on your machine. You will also need to install the `typings` NPM package globally via `npm i -g typings`.
+> Even if you already have the `typings` package installed globally, this repo requires `typings 1.x` so make sure your version is up do date.
 
 ## Getting Started
 There are two main parts to this application. The first is the server for which we are using `json-server` to simulate a REST api. The second part is the Angular 2 application which we will use `webpack-dev-server` to build and display.  

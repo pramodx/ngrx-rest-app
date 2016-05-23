@@ -15,7 +15,7 @@
     "typings/main.d.ts"
   ],
   "filesGlob": [
-    "typings/browser.d.ts",
+    "typings/index.d.ts",
     "client/**/*.ts"
   ],
   "compileOnSave": false,
@@ -23,7 +23,7 @@
     "rewriteTsconfig": true
   },
   "files": [
-    "typings/browser.d.ts",
+    "typings/index.d.ts",
     "client/bootstrap.ts",
     "client/src/app.ts",
     "client/src/items.spec.ts",
