@@ -1,15 +1,12 @@
-import {Component, Input, Output, EventEmitter, ChangeDetectionStrategy} from '@angular/core';
-import {ItemsService, Item, AppStore} from './items';
-import {Observable} from 'rxjs/Observable';
-import {Store} from '@ngrx/store';
+import {Observable} from "rxjs/Observable";
+import {Item, ItemsService, AppStore} from "./items";
+import {Store} from "@ngrx/store";
+import {Component, ChangeDetectionStrategy, EventEmitter, Output, Input} from "@angular/core";
 
-//-------------------------------------------------------------------
-// ITEMS-LIST
-//-------------------------------------------------------------------
 @Component({
-  selector: 'items-list',
-  template: `
-  <div *ngFor="let item of items" (click)="selected.emit(item)"
+	selector: 'items-list',
+	template: `
+		<div *ngFor="#item of items" (click)="selected.emit(item)"
     class="item-card mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text">{{item.name}}</h2>
@@ -24,21 +21,19 @@ import {Store} from '@ngrx/store';
       </button>
     </div>
   </div>
-  `
+`
 })
 class ItemList {
-  @Input() items: Item[];
-  @Output() selected = new EventEmitter();
-  @Output() deleted = new EventEmitter();
+	@Input() items: Item[];
+	@Output() selected = new EventEmitter();
+	@Output() deleted = new EventEmitter()
 }
 
-//-------------------------------------------------------------------
-// ITEM DETAIL
-//-------------------------------------------------------------------
+
 @Component({
-  selector: 'item-detail',
-  template: `
-  <div class="item-card mdl-card mdl-shadow--2dp">
+	selector: 'item-detail',
+	template: `
+	<div class="item-card mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text" *ngIf="selectedItem.id">Editing {{originalName}}</h2>
       <h2 class="mdl-card__title-text" *ngIf="!selectedItem.id">Create New Item</h2>
@@ -51,7 +46,6 @@ class ItemList {
               placeholder="Enter a name"
               class="mdl-textfield__input" type="text">
           </div>
-
           <div class="mdl-textfield mdl-js-textfield">
             <label>Item Description</label>
             <input [(ngModel)]="selectedItem.description"
@@ -67,27 +61,29 @@ class ItemList {
           class="mdl-button mdl-js-button mdl-button--colored mdl-js-ripple-effect">Save</button>
     </div>
   </div>
-  `
+
+`
 })
 class ItemDetail {
-  @Input('item') set _item(value: Item){
-    if (value) this.originalName = value.name;
-    this.selectedItem = Object.assign({}, value);
-  }
-  originalName: string;
-  selectedItem: Item;
-  @Output() saved = new EventEmitter();
-  @Output() cancelled = new EventEmitter();
+	@Input('item') _item: Item;
+	@Output() saved = new EventEmitter();
+	@Output() cancelled = new EventEmitter();
+	originalName: string;
+	selectedItem: Item;
+	
+	set _item(value: Item) {
+		if (value) this.originalName = value.name;
+		this.selectedItem = Object.assign({}, value)
+	}
 }
 
-//-------------------------------------------------------------------
-// MAIN COMPONENT
-//-------------------------------------------------------------------
+
 @Component({
-  selector: 'my-app',
-  providers: [],
-  template: `
-  <div class="mdl-cell mdl-cell--6-col">
+	selector: 'my-app',
+	providers: [],
+	directives: [ItemList, ItemDetail],
+	template: `
+<div class="mdl-cell mdl-cell--6-col">
     <items-list [items]="items | async"
       (selected)="selectItem($event)" (deleted)="deleteItem($event)">
     </items-list>
@@ -95,50 +91,40 @@ class ItemDetail {
   <div class="mdl-cell mdl-cell--6-col">
     <item-detail
       (saved)="saveItem($event)" (cancelled)="resetItem($event)"
-      [item]="selectedItem | async">Select an Item</item-detail>
+      [item]="selectedItem | async"></item-detail>
   </div>
-  `,
-  directives: [ItemList, ItemDetail],
-  changeDetection: ChangeDetectionStrategy.OnPush
+`,
+	changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class App {
-  items: Observable<Array<Item>>;
-  selectedItem: Observable<Item>;
-
-  constructor(private itemsService: ItemsService, private store: Store<AppStore>) {
-
-  }
-
-  ngOnInit() {
-    this.items = this.itemsService.items;
-    this.selectedItem = this.store.select('selectedItem');
-    this.selectedItem.subscribe(v => console.log(v));
-
-    this.itemsService.loadItems();
-  }
-
-  resetItem() {
-    let emptyItem: Item = {id: null, name: '', description: ''};
-    this.store.dispatch({type: 'SELECT_ITEM', payload: emptyItem});
-  }
-
-  selectItem(item: Item) {
-    this.store.dispatch({type: 'SELECT_ITEM', payload: item});
-  }
-
-  saveItem(item: Item) {
-    this.itemsService.saveItem(item);
-
-    // Generally, we would want to wait for the result of `itemsService.saveItem`
-    // before resetting the current item.
-    this.resetItem();
-  }
-
-  deleteItem(item: Item) {
-    this.itemsService.deleteItem(item);
-
-    // Generally, we would want to wait for the result of `itemsService.deleteItem`
-    // before resetting the current item.
-    this.resetItem();
-  }
+	items: Observable<Array<Item>>;
+	selectedItem: Observable<Item>;
+	
+	constructor(private itemsService: ItemsService,
+	            private store: Store<AppStore>) {
+		this.items = itemsService.items;
+		this.selectedItem = store.select('selectedItem');
+		this.selectedItem.subscribe(v => console.log(v));
+		itemsService.loadItems()
+	}
+	
+	selectItem(item: Item) {
+		this.store.dispatch({type: 'SELECT_ITEM', payload: item})
+	}
+	
+	deleteItem(item: Item) {
+		this.itemsService.deleteItem(item);
+	}
+	
+	saveItem(item: Item) {
+		this.itemsService.saveItem(item);
+		this.resetItem();
+	}
+	
+	resetItem() {
+		let emptyItem: Item = {id: null, name: '', description: ''};
+		this.store.dispatch({type: 'SELECT_ITEM', payload: emptyItem});
+	}
+	
+	
 }
