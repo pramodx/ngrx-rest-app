@@ -1,7 +1,7 @@
-import {Injectable} from "@angular/core";
-import {Observable} from "rxjs/Observable";
-import {Store} from "@ngrx/store";
-import {Http, Headers} from "@angular/http";
+import {Injectable} from '@angular/core';
+import {Observable} from 'rxjs/Observable';
+import {Store} from '@ngrx/store';
+import {Http, Headers} from '@angular/http';
 import 'rxjs/add/operator/map';
 
 const BASE_URL = 'http://localhost:3000/items/';
@@ -27,7 +27,6 @@ export interface AppStore {
  --------------------------------------------------------- */
 //The items reducers performs action on our list of items
 export const items = (state: any = [], {type, payload}) => {
-	
 	switch (type) {
 		case 'ADD_ITEMS':
 			return payload;
@@ -39,7 +38,7 @@ export const items = (state: any = [], {type, payload}) => {
 			});
 		case 'DELETE_ITEM':
 			return state.filter(item => {
-				return item.id !== payload.id
+				return item.id !== payload.id;
 			});
 		default:
 			return state;
@@ -54,8 +53,7 @@ export const selectedItem = (state: any = [], {type, payload}) => {
 		default:
 			return state;
 	}
-}
-
+};
 
 //-------------------------------------------------------------------
 // ITEMS SERVICE
@@ -63,37 +61,30 @@ export const selectedItem = (state: any = [], {type, payload}) => {
 @Injectable()
 export class ItemsService {
 	items: Observable<Array<Item>>;
-	
 	constructor(private http: Http, private store: Store<AppStore>) {
 		this.items = store.select('items');
 	}
-	
 	loadItems() {
 		this.http.get(BASE_URL)
 			.map(res => res.json())
 			.map(payload => ({ type: 'ADD_ITEMS', payload }))
 			.subscribe(action => this.store.dispatch(action));
 	}
-	
 	deleteItem(item: Item) {
 		this.http.delete(`${BASE_URL}${item.id}`)
 			.subscribe(action => this.store.dispatch({ type: 'DELETE_ITEM', payload: item }));
 	}
-	
 	createItem(item: Item) {
 		this.http.post(BASE_URL, JSON.stringify(item), HEADER)
 			.map(res => res.json())
 			.map(payload => ({ type: 'CREATE_ITEM', payload }))
 			.subscribe(action => this.store.dispatch(action));
 	}
-	
 	updateItem(item: Item) {
 		this.http.put(`${BASE_URL}${item.id}`, JSON.stringify(item), HEADER)
 			.subscribe(action => this.store.dispatch({ type: 'UPDATE_ITEM', payload: item }));
 	}
-	
 	saveItem(item: Item) {
 		(item.id) ? this.updateItem(item) : this.createItem(item);
 	}
-	
 }

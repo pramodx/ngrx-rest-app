@@ -1,12 +1,12 @@
-import {Observable} from "rxjs/Observable";
-import {Item, ItemsService, AppStore} from "./items";
-import {Store} from "@ngrx/store";
-import {Component, ChangeDetectionStrategy, EventEmitter, Output, Input} from "@angular/core";
+import {Observable} from 'rxjs/Observable';
+import {Item, ItemsService, AppStore} from './items';
+import {Store} from '@ngrx/store';
+import {Component, ChangeDetectionStrategy, EventEmitter, Output, Input} from '@angular/core';
 
 @Component({
 	selector: 'items-list',
 	template: `
-		<div *ngFor="#item of items" (click)="selected.emit(item)"
+		<div *ngFor="let item of items" (click)="selected.emit(item)"
     class="item-card mdl-card mdl-shadow--2dp">
     <div class="mdl-card__title">
       <h2 class="mdl-card__title-text">{{item.name}}</h2>
@@ -26,7 +26,7 @@ import {Component, ChangeDetectionStrategy, EventEmitter, Output, Input} from "@
 class ItemList {
 	@Input() items: Item[];
 	@Output() selected = new EventEmitter();
-	@Output() deleted = new EventEmitter()
+	@Output() deleted = new EventEmitter();
 }
 
 
@@ -70,10 +70,9 @@ class ItemDetail {
 	@Output() cancelled = new EventEmitter();
 	originalName: string;
 	selectedItem: Item;
-	
 	set _item(value: Item) {
 		if (value) this.originalName = value.name;
-		this.selectedItem = Object.assign({}, value)
+		this.selectedItem = Object.assign({}, value);
 	}
 }
 
@@ -99,32 +98,25 @@ class ItemDetail {
 export class App {
 	items: Observable<Array<Item>>;
 	selectedItem: Observable<Item>;
-	
 	constructor(private itemsService: ItemsService,
 	            private store: Store<AppStore>) {
 		this.items = itemsService.items;
 		this.selectedItem = store.select('selectedItem');
 		this.selectedItem.subscribe(v => console.log(v));
-		itemsService.loadItems()
+		itemsService.loadItems();
 	}
-	
 	selectItem(item: Item) {
-		this.store.dispatch({type: 'SELECT_ITEM', payload: item})
+		this.store.dispatch({type: 'SELECT_ITEM', payload: item});
 	}
-	
 	deleteItem(item: Item) {
 		this.itemsService.deleteItem(item);
 	}
-	
 	saveItem(item: Item) {
 		this.itemsService.saveItem(item);
 		this.resetItem();
 	}
-	
 	resetItem() {
 		let emptyItem: Item = {id: null, name: '', description: ''};
 		this.store.dispatch({type: 'SELECT_ITEM', payload: emptyItem});
 	}
-	
-	
 }
